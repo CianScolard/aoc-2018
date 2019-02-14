@@ -8,16 +8,25 @@ ch = logging.StreamHandler()
 log.addHandler(ch)
 
 
-def checks(id, count):
+def checks(string, count):
 
-    # for each digit in string
-    # dict digit:count++
+    char_dict = {}
+    # for each char in string, add to set / increment 1
     # when finished, should have key:value pairs for all letters in string, scan this
-    # if any letter == 2 AND any letter == 3 return both
-    # else if any letter == 2 return two
-    # else if any letter == 3 return three
-    # else retun neither
-    return True
+    for char in string[:len(string) - 1]:
+        if char in char_dict:
+            char_dict[char] += 1
+        else:
+            char_dict[char] = 1
+        log.debug("char_dict: {0}".format(char_dict))
+
+    # check list, if any value == count
+    for char in char_dict:
+        if char_dict[char] == count:
+            return True
+
+    # else return false
+    return False
 
 
 if __name__ == '__main__':
@@ -42,8 +51,17 @@ if __name__ == '__main__':
             log.debug("Checking box_id: {0}".format(box_id))
 
             if checks(box_id, 2) is True:
-                log.debug("{0} valid for 2s".format(box_id))
+                log.info("{0} valid for 2s".format(box_id))
                 checksum2s += 1
                 twos_set.update(box_id)
 
+            if checks(box_id, 3) is True:
+                log.info("{0} valid for 3s".format(box_id))
+                checksum3s += 1
+                twos_set.update(box_id)
+
     log.info("# check2s {0}.".format(checksum2s))
+    log.info("# check3s {0}.".format(checksum3s))
+
+    checksum = checksum2s*checksum3s
+    log.info("Checksum: {0}".format(checksum))
